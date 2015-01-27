@@ -3,6 +3,9 @@ package com.shekharpatnaik.futures;
 import com.shekharpatnaik.futures.interfaces.FunctionWithError;
 import com.shekharpatnaik.futures.interfaces.SupplierWithError;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 import java.util.function.Consumer;
 
 /**
@@ -18,6 +21,7 @@ public class Promise<T> {
     private SupplierWithError<T> executableFunction;
     private FunctionWithError<T> executableFunctionWithArguments;
     private Promise<T> chainedPromise;
+    private static List<Thread> allThreads = new Vector<>();
 
     public void done(Consumer<T> callback) {
         this.callback = callback;
@@ -75,6 +79,7 @@ public class Promise<T> {
             }
         });
 
+        allThreads.add(thread);
         thread.start();
     }
 
@@ -85,5 +90,15 @@ public class Promise<T> {
 
     public Promise(FunctionWithError<T> f) throws Exception {
         this.executableFunctionWithArguments = f;
+    }
+
+    public static void waitForAllThreadsToComplete() {
+        allThreads.forEach((thread) -> {
+            try {
+                thread.join();
+            } catch(Exception e) {
+                // Silently fail
+            }
+        });
     }
 }

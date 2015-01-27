@@ -1,4 +1,5 @@
 import com.shekharpatnaik.futures.Promise;
+import org.junit.After;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -7,7 +8,12 @@ import static org.junit.Assert.assertEquals;
  * Created by shpatnaik on 1/25/15.
  */
 public class TestPromise {
-    
+
+    @After
+    public void tearDown() {
+        Promise.waitForAllThreadsToComplete();
+    }
+
     @Test
     public void Promise_CallFutureWithFunction_CallsCallbackwhenComplete() throws Exception {
         // Promise to wait
