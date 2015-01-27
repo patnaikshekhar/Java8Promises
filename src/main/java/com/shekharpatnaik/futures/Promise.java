@@ -1,10 +1,13 @@
 package com.shekharpatnaik.futures;
 
+import com.shekharpatnaik.futures.interfaces.FunctionWithError;
+import com.shekharpatnaik.futures.interfaces.SupplierWithError;
+
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Created by shpatnaik on 1/25/15.
+ * This is a promises library with allows a user to execute functions concurrently
  */
 public class Promise<T> {
 
@@ -12,6 +15,9 @@ public class Promise<T> {
     private Consumer<Exception> errorCallback;
     private T result;
     private Exception exceptionResult;
+    private SupplierWithError<T> executableFunction;
+    private FunctionWithError<T> executableFunctionWithArguments;
+    private Promise<T> chainedPromise;
 
     public void done(Consumer<T> callback) {
         this.callback = callback;
@@ -19,6 +25,16 @@ public class Promise<T> {
         if (result != null) {
             this.callback.accept(result);
         }
+    }
+
+    public Promise<T> then(FunctionWithError<T> f) throws Exception {
+        this.chainedPromise = new Promise<>(f);
+
+        if (result != null) {
+            this.chainedPromise.execute(result);
+        }
+
+        return this.chainedPromise;
     }
 
     public void error(Consumer<Exception> callback) {
@@ -29,13 +45,24 @@ public class Promise<T> {
         }
     }
 
-    public Promise(SupplierWithError<T> f) throws Exception {
+    public void execute() {
+        execute(null);
+    }
+
+    public void execute(T data) {
         Thread thread = new Thread(() -> {
             try {
-                if (this.callback != null) {
-                    this.callback.accept(f.get());
-                } else {
-                    result = f.get();
+
+                if (this.executableFunction != null) {
+                    result = this.executableFunction.get();
+                } else if (this.executableFunctionWithArguments != null) {
+                    result = this.executableFunctionWithArguments.apply(data);
+                }
+
+                if (this.chainedPromise != null) {
+                    this.chainedPromise.execute(result);
+                } else if (this.callback != null) {
+                    this.callback.accept(result);
                 }
 
             } catch(Exception e) {
@@ -49,5 +76,14 @@ public class Promise<T> {
         });
 
         thread.start();
+    }
+
+    public Promise(SupplierWithError<T> f) throws Exception {
+        this.executableFunction = f;
+        this.execute();
+    }
+
+    public Promise(FunctionWithError<T> f) throws Exception {
+        this.executableFunctionWithArguments = f;
     }
 }
