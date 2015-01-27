@@ -21,3 +21,17 @@ Promise<Integer> p = new Promise<>(() -> {
 
 p.error((e) -> assertEquals("Exception", e.getMessage()));
 ```
+
+## Promises can be chained with then
+```java
+(new Promise<>(() -> 1))
+        .then((x) -> {
+            assertEquals((Integer) 1, x);
+            return 2;
+        })
+        .then((x) -> {
+            assertEquals((Integer) 2, x);
+            return 3;
+        })
+        .done((x) -> assertEquals((Integer) 3, x));
+```
