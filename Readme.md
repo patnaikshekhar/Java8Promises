@@ -1,7 +1,6 @@
 # Simple Promises Library for Java
 
-## Getting Started
-- Include the JAR file in your project
+## Usage Examples
 
 - Simple Done Scenario
 The done callback is called after the promise is complete
