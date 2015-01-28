@@ -2,7 +2,10 @@ import com.shekharpatnaik.futures.Promise;
 import org.junit.After;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by shpatnaik on 1/25/15.
@@ -43,5 +46,15 @@ public class TestPromise {
                     return 3;
                 })
                 .done((x) -> assertEquals((Integer) 3, x));
+    }
+
+    @Test
+    public void Promise_CallMuliplePromisesUsingAll_ReturnsAListOfResults() throws Exception {
+        Promise.All(() -> 1, () -> 2, () -> 3).done((lst) -> {
+            assertEquals(3, lst.size());
+            assertTrue(lst.contains(1));
+            assertTrue(lst.contains(2));
+            assertTrue(lst.contains(3));
+        });
     }
 }

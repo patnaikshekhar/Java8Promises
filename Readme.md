@@ -3,7 +3,7 @@
 ## Getting Started
 - Include the JAR file in your project
 
-## Simple Done Scenario
+- Simple Done Scenario
 The done callback is called after the promise is complete
 
 ```java
@@ -11,7 +11,7 @@ Promise<Integer> p = new Promise<>(() -> 0);
 p.done((x) -> assertEquals((Integer) 0, x));
 ```
 
-## Simple Error Scenario
+- Simple Error Scenario
 The error callback is when an error occurs in the chain.
 
 ```java
@@ -22,7 +22,7 @@ Promise<Integer> p = new Promise<>(() -> {
 p.error((e) -> assertEquals("Exception", e.getMessage()));
 ```
 
-## Promises can be chained with then
+- Promises can be chained with then
 ```java
 (new Promise<>(() -> 1))
         .then((x) -> {
@@ -34,6 +34,17 @@ p.error((e) -> assertEquals("Exception", e.getMessage()));
             return 3;
         })
         .done((x) -> assertEquals((Integer) 3, x));
+```
+
+- Promises can be executed in parallel and results can be returned in a list
+
+```java
+Promise.All(() -> 1, () -> 2, () -> 3).done((lst) -> {
+    assertEquals(3, lst.size());
+    assertTrue(lst.contains(1));
+    assertTrue(lst.contains(2));
+    assertTrue(lst.contains(3));
+});
 ```
 
 ## The library also includes HTTP helper methods such as
