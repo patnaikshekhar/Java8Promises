@@ -35,3 +35,31 @@ p.error((e) -> assertEquals("Exception", e.getMessage()));
         })
         .done((x) -> assertEquals((Integer) 3, x));
 ```
+
+## The library also includes HTTP helper methods such as
+
+- HTTP Get with String response
+
+```java
+HTTPPromise.get("http://api.openweathermap.org/data/2.5/weather?q=London,uk")
+    .done((result) -> assertNotNull(result));
+```
+
+- HTTP Get with JSON response
+
+```java
+HTTPPromise.getJSON("http://api.openweathermap.org/data/2.5/weather?q=London,uk")
+    .done((result) -> assertNotNull(result.get("name")));
+```
+
+- HTTP POST JSON with JSON response
+
+```java
+JSONObject data = new JSONObject();
+data.put("title", "foo");
+data.put("body", "bar");
+data.put("userId", "1");
+
+HTTPPromise.postJSON("http://jsonplaceholder.typicode.com/posts", data)
+    .done((result) -> assertEquals("foo", result.get("title")));
+```
