@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Created by shpatnaik on 1/27/15.
- * Integration tests
+ * End to End Integration tests for HTTPPromise API
  */
 public class TestHTTPPromise {
 
