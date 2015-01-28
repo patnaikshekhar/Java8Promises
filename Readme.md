@@ -47,6 +47,14 @@ Promise.All(() -> 1, () -> 2, () -> 3).done((lst) -> {
 });
 ```
 
+- Promises can be executed in parallel and the result of the fastest one can be used
+
+```java
+Promise.Any(() -> 1, () -> 2, () -> 3).done((element) -> {
+    assertTrue(element == 1 || element == 2 || element == 3);
+});
+```
+
 ## The library also includes HTTP helper methods such as
 
 - HTTP Get with String response

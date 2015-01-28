@@ -137,4 +137,39 @@ public class Promise<T> {
 
         return All(promises);
     }
+
+    private static <T> Promise<T> Any(List<Promise<T>> promises) throws Exception {
+
+        List<T> results = new Vector<>();
+
+        return new Promise<>(() -> {
+            promises.forEach((promise) -> promise.done((x) -> {
+                results.add(x);
+            }));
+
+            // Wait infinitely until the results are obtained
+            while(results.size() <= 0) {
+                Thread.sleep(100);
+            }
+
+            return results.get(0);
+        });
+
+    }
+
+    public static <T> Promise<T> Any(Promise<T>... promises) {
+        return Any(promises);
+    }
+
+    public static <T> Promise<T> Any(SupplierWithError<T>... lambdas) throws Exception {
+        List<Promise<T>> promises = Arrays.asList(lambdas).stream().map((x) -> {
+            try {
+                return new Promise<T>(x);
+            } catch (Exception e) {
+                return null;
+            }
+        }).collect(Collectors.toList());
+
+        return Any(promises);
+    }
 }

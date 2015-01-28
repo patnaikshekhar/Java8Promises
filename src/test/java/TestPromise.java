@@ -57,4 +57,11 @@ public class TestPromise {
             assertTrue(lst.contains(3));
         });
     }
+
+    @Test
+    public void Promise_CallMuliplePromisesUsingAny_ReturnsAnyOneResult() throws Exception {
+        Promise.Any(() -> 1, () -> 2, () -> 3).done((element) -> {
+            assertTrue(element == 1 || element == 2 || element == 3);
+        });
+    }
 }
